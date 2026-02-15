@@ -1,58 +1,65 @@
 body {
-    background: #0f0f0f;
+    margin: 0;
+    background: radial-gradient(circle, #1a001f, #000);
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    color: white;
 }
 
 .game-container {
-    text-align: center;
-}
-
-h1 {
-    color: #00f7ff;
-}
-
-.score-box {
-    background: #1e1e1e;
-    padding: 10px 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}
-
-.grid {
     width: 400px;
-    height: 400px;
-    background: #1a1a1a;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+    height: 700px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.top-bar {
+    text-align: center;
+    color: white;
+    font-size: 22px;
     padding: 10px;
-    border-radius: 15px;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    height: 500px;
+    background: #111;
+    padding: 6px;
+    border-radius: 10px;
+}
+
+.column {
+    background: linear-gradient(#222, #111);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    padding: 4px;
+    position: relative;
 }
 
 .tile {
-    width: 80px;
-    height: 80px;
-    background: #2c2c2c;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 22px;
-    font-weight: bold;
-    border-radius: 10px;
-    transition: 0.2s;
+    width: 90%;
+    margin-bottom: 6px;
+    animation: dropAnim 0.25s ease;
 }
 
-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background: #00f7ff;
-    border: none;
-    border-radius: 10px;
-    font-weight: bold;
+@keyframes dropAnim {
+    from { transform: translateY(-20px); opacity:0; }
+    to { transform: translateY(0); opacity:1; }
+}
+
+.bottom-panel {
+    text-align: center;
+    padding: 10px;
+}
+
+.current-tile {
+    width: 80px;
     cursor: pointer;
 }
