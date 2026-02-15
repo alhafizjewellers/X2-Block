@@ -1,110 +1,71 @@
-const grid = document.getElementById("grid");
-const scoreDisplay = document.getElementById("score");
+const board = document.getElementById("board");
+const currentTileImg = document.getElementById("currentTile");
+const scoreEl = document.getElementById("score");
+
 let score = 0;
-let size = 4;
-let board = [];
+let columns = [];
+let currentValue;
+
+const values = [2,4,8,16,32,64,128];
 
 function createBoard() {
-    board = [];
-    grid.innerHTML = "";
-    for (let i = 0; i < size * size; i++) {
-        board.push(0);
-        const tile = document.createElement("div");
-        tile.classList.add("tile");
-        tile.innerText = "";
-        grid.appendChild(tile);
+    for(let i=0; i<5; i++) {
+        const col = document.createElement("div");
+        col.classList.add("column");
+        col.addEventListener("click", () => dropTile(i));
+        board.appendChild(col);
+        columns.push([]);
     }
-    generate();
-    generate();
 }
 
-function generate() {
-    let empty = board.map((val, idx) => val === 0 ? idx : null).filter(v => v !== null);
-    if (empty.length === 0) return;
-    let randomIndex = empty[Math.floor(Math.random() * empty.length)];
-    board[randomIndex] = 2;
-    updateBoard();
+function randomTile() {
+    return values[Math.floor(Math.random()*values.length)];
 }
 
-function updateBoard() {
-    const tiles = document.querySelectorAll(".tile");
-    tiles.forEach((tile, index) => {
-        tile.innerText = board[index] === 0 ? "" : board[index];
-        tile.style.background = board[index] > 0 ? "#333" : "#2c2c2c";
+function setCurrentTile() {
+    currentValue = randomTile();
+    currentTileImg.src = `images/tile${currentValue}.png`;
+}
+
+function dropTile(colIndex) {
+
+    let col = columns[colIndex];
+
+    if(col.length >= 8) return; // limit height
+
+    col.push(currentValue);
+    mergeColumn(colIndex);
+    render();
+    setCurrentTile();
+}
+
+function mergeColumn(colIndex) {
+    let col = columns[colIndex];
+
+    for(let i=0; i<col.length-1; i++) {
+        if(col[i] === col[i+1]) {
+            col[i] *= 2;
+            score += col[i];
+            col.splice(i+1,1);
+            mergeColumn(colIndex);
+            break;
+        }
+    }
+}
+
+function render() {
+    const colDivs = document.querySelectorAll(".column");
+    colDivs.forEach((colDiv, index) => {
+        colDiv.innerHTML = "";
+        columns[index].forEach(value => {
+            const img = document.createElement("img");
+            img.src = `images/tile${value}.png`;
+            img.classList.add("tile");
+            colDiv.appendChild(img);
+        });
     });
-    scoreDisplay.innerText = score;
-}
-
-function slide(row) {
-    row = row.filter(val => val);
-    for (let i = 0; i < row.length - 1; i++) {
-        if (row[i] === row[i + 1]) {
-            row[i] *= 2;
-            score += row[i];
-            row[i + 1] = 0;
-        }
-    }
-    row = row.filter(val => val);
-    while (row.length < size) row.push(0);
-    return row;
-}
-
-function moveLeft() {
-    for (let i = 0; i < size; i++) {
-        let row = board.slice(i * size, i * size + size);
-        row = slide(row);
-        for (let j = 0; j < size; j++) {
-            board[i * size + j] = row[j];
-        }
-    }
-    generate();
-}
-
-function moveRight() {
-    for (let i = 0; i < size; i++) {
-        let row = board.slice(i * size, i * size + size).reverse();
-        row = slide(row);
-        row.reverse();
-        for (let j = 0; j < size; j++) {
-            board[i * size + j] = row[j];
-        }
-    }
-    generate();
-}
-
-function moveUp() {
-    for (let i = 0; i < size; i++) {
-        let col = [];
-        for (let j = 0; j < size; j++) col.push(board[j * size + i]);
-        col = slide(col);
-        for (let j = 0; j < size; j++) board[j * size + i] = col[j];
-    }
-    generate();
-}
-
-function moveDown() {
-    for (let i = 0; i < size; i++) {
-        let col = [];
-        for (let j = 0; j < size; j++) col.push(board[j * size + i]);
-        col.reverse();
-        col = slide(col);
-        col.reverse();
-        for (let j = 0; j < size; j++) board[j * size + i] = col[j];
-    }
-    generate();
-}
-
-document.addEventListener("keydown", e => {
-    if (e.key === "ArrowLeft") moveLeft();
-    if (e.key === "ArrowRight") moveRight();
-    if (e.key === "ArrowUp") moveUp();
-    if (e.key === "ArrowDown") moveDown();
-    updateBoard();
-});
-
-function restartGame() {
-    score = 0;
-    createBoard();
+    scoreEl.innerText = score;
 }
 
 createBoard();
+setCurrentTile();
