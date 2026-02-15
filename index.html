@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>X2 Blocks Dark</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X2 Blocks Clone</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="game-container">
-    <h1>X2 BLOCKS</h1>
-    <div class="score-box">
-        Score: <span id="score">0</span>
+
+    <div class="top-bar">
+        <div class="score">Score: <span id="score">0</span></div>
     </div>
 
-    <div class="grid" id="grid"></div>
+    <div class="board" id="board"></div>
 
-    <button onclick="restartGame()">Restart</button>
+    <div class="bottom-panel">
+        <img id="currentTile" class="current-tile" src="">
+    </div>
+
 </div>
 
 <script src="script.js"></script>
